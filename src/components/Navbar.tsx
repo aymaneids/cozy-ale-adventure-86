@@ -2,11 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -32,6 +34,26 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    // Close mobile menu when route changes
+    closeMenu();
+  }, [location.pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobile) {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, isMobile]);
 
   return (
     <header
@@ -77,7 +99,7 @@ const Navbar = () => {
         {/* Mobile Navigation Menu */}
         <div
           className={`fixed inset-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center transition-all duration-300 md:hidden ${
-            isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+            isOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
           }`}
         >
           <nav className="flex flex-col space-y-6 items-center">
