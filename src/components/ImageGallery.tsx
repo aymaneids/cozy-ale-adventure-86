@@ -48,17 +48,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     if (e.key === "ArrowLeft") navigateImage("prev");
   };
 
+  // Using CSS classes with grid-cols utility instead of inline styles
+  const gridClasses = `grid gap-4 grid-cols-${columnsMobile} md:grid-cols-${columnsDesktop}`;
+
   return (
     <>
-      <div
-        className={`grid grid-cols-${columnsMobile} md:grid-cols-${columnsDesktop} gap-4`}
-        style={{
-          gridTemplateColumns: `repeat(${columnsMobile}, minmax(0, 1fr))`,
-          "@media (min-width: 768px)": {
-            gridTemplateColumns: `repeat(${columnsDesktop}, minmax(0, 1fr))`,
-          },
-        }}
-      >
+      <div className={gridClasses}>
         {images.map((image, index) => (
           <motion.div
             key={index}
